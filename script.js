@@ -180,6 +180,48 @@ function searchProducts() {
   });
 
 }
+function filterProducts(category) {
+  let products = document.querySelectorAll(".product");
+
+  products.forEach(p => {
+    if (category === "all") {
+      p.style.display = "block";
+    } else if (p.classList.contains(category)) {
+      p.style.display = "block";
+    } else {
+      p.style.display = "none";
+    }
+  });
+}
+function buyOnWhatsApp() {
+  let name = document.getElementById("modalName").innerText;
+  let price = document.getElementById("modalPrice").innerText;
+
+  let msg = `Hello, I want to order:\n${name}\nPrice: ${price}`;
+
+  let url = "https://wa.me/255624060759?text=" + encodeURIComponent(msg);
+
+  window.open(url, "_blank");
+}
+function filterProducts(category) {
+  let products = document.querySelectorAll(".product");
+
+  products.forEach(product => {
+
+    if (category === "all") {
+      product.style.display = "block";
+    }
+
+    else if (product.classList.contains(category)) {
+      product.style.display = "block";
+    }
+
+    else {
+      product.style.display = "none";
+    }
+
+  });
+}
 
 function getBotReply(message) { message = message.toLowerCase(); 
 if (message.includes("price")) { return "Prices are 15,000 TSh (~$6) 😊"; } 

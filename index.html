@@ -2,11 +2,29 @@
 <html>
 <head>
   <title>Mariam Sandal Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <section id="home" class="hero">
+
+  <div class="hero-text">
+    <h1>Step Into Style & Comfort 👡</h1>
+
+    <p>
+      Premium handmade sandals at affordable prices.
+    </p>
+
+    <button onclick="document.getElementById('products').scrollIntoView()">
+      Shop Now
+    </button>
+  </div>
+
+</section>
+
   <!-- PRODUCT MODAL -->
 <div id="productModal" class="modal">
   <div class="modal-content">
@@ -22,6 +40,7 @@
     <p id="modalDesc"></p>
 
     <button onclick="addToCartFromModal()">Add to Cart 🛒</button>
+    <button onclick="buyOnWhatsApp()">Order on WhatsApp</button>
     <h3>⭐ Reviews</h3>
 
 <div id="reviewsList"></div>
@@ -33,9 +52,16 @@
   </div>
 </div>
 
-<header>
+<header class="navbar">
   <h1>Mariam Sandal Store 👡</h1>
+  
   <p>Affordable & Stylish Sandals</p>
+  <nav class="nav-links">
+    <a href="#home">Home</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+  </nav>
+
 </header>
 
 <!-- PAYMENT -->
@@ -69,138 +95,533 @@
     onkeyup="searchProducts()"
   >
 </div>
+<div class="filters">
 
+  <button onclick="filterProducts('all')">All</button>
+  <button onclick="filterProducts('men')">Men</button>
+  <button onclick="filterProducts('women')">Women</button>
+
+</div>
 <!-- PRODUCTS -->
 <div class="products">
 
-  <div class="product">
-    <img src="images/sandal.jpg">
-    <p>Leather Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button onclick="openModal('Leather Sandal', '15,000 TZS', 'images/sandal.jpg', 'Leather and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Leather Sandal')">❤️ Favorite</button>
-</button>
+  <div class="product for women">
+
+  <img src="images/sandal.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
   </div>
 
-  <div class="product">
-    <img src="images/sandal2.jpg">
-    <p>Classic Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button onclick="openModal('Classic Sandal', '15,000 TZS', 'images/sandal2.jpg', 'Best running shoes')">
-  View Product
-  <button onclick="toggleFavorite('Classic Sandal')">❤️ Favorite</button>
-</button>
+</div>
+
+  <div class="product for women">
+
+  <img src="images/sandal2.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
   </div>
 
-  <div class="product">
-    <img src="images/sandal3.jpg">
-    <p>Elegant Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button class="buy-btn" onclick="openModal('Elegant Sandal', '15,000 TZS', 'images/sandal3.jpg', 'Elegant and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Elegant Sandal')">❤️ Favorite</button>
-</button>
+</div>
+
+  <div class="product for women">
+
+  <img src="images/sandal3.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
   </div>
+
+</div>
 
 
 
-<div class="product">
-    <img src="images/sandal4.jpg">
-    <p>Elegant Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button class="buy-btn" onclick="openModal('Elegant Sandal', '15,000 TZS', 'images/sandal4.jpg', 'Elegant and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Elegant Sandal')">❤️ Favorite</button>
-</button>
-  </div>
-  <div class="product">
-    <img src="images/sandal5.jpg">
-    <p>Classic Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button class="buy-btn" onclick="openModal('Classic Sandal', '15,000 TZS', 'images/sandal5.jpg', 'Classic and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Classic Sandal')">❤️ Favorite</button>
-</button>
-  </div>
-  <div class="product">
-    <img src="images/sandal6.jpg">
-    <p>Elegant Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button class="buy-btn" onclick="openModal('Elegant Sandal', '15,000 TZS', 'images/sandal6.jpg', 'Elegant and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Elegant Sandal')">❤️ Favorite</button>
-</button>
-  </div>
-  <div class="product">
-    <img src="images/sandal7.jpg">
-    <p>Leather Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button onclick="openModal('Leather Sandal', '15,000 TZS', 'images/sandal7.jpg', 'Leather and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Leather Sandal')">❤️ Favorite</button>
-</button>
+<div class="product for women">
+
+  <img src="images/sandal4.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
   </div>
 
-  <div class="product">
-    <img src="images/sandal8.jpg">
-    <p>Leather Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button onclick="openModal('Leather Sandal', '15,000 TZS', 'images/sandal8.jpg', 'Leather and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Leather Sandal')">❤️ Favorite</button>
-</button>
-  </div>
-  <div class="product">
-    <img src="images/sandal9.jpg">
-    <p>Leather Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button onclick="openModal('Leather Sandal', '15,000 TZS', 'images/sandal9.jpg', 'Leather and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Leather Sandal')">❤️ Favorite</button>
-</button>
+</div>
+  <div class="product for women">
+
+  <img src="images/sandal5.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
   </div>
 
-  <div class="product">
-    <img src="images/sandal10.jpg">
-    <p>Elegant Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button class="buy-btn" onclick="openModal('Elegant Sandal', '15,000 TZS', 'images/sandal10.jpg', 'Elegant and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Elegant Sandal')">❤️ Favorite</button>
-</button>
+</div>
+  <div class="product for women">
+
+  <img src="images/sandal6.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
   </div>
-  <div class="product">
-    <img src="images/sandal11.jpg">
-    <p>Elegant Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button class="buy-btn" onclick="openModal('Elegant Sandal', '15,000 TZS', 'images/sandal11.jpg', 'Elegant and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Elegant Sandal')">❤️ Favorite</button>
-</button>
+
+</div>
+  <div class="product for women">
+
+  <img src="images/sandal7.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
   </div>
-  <div class="product">
-    <img src="images/sandal12.jpg">
-    <p>Classic Sandal</p>
-    <p class="sizes">Sizes: 36 - 42</p>
-    <p class="price" data-tsh="15000" data-usd="6">15000 TSh</p>
-    <button class="buy-btn" onclick="openModal('Classic Sandal', '15,000 TZS', 'images/sandal12.jpg', 'Classic and comfortable')">
-  View Product
-  <button onclick="toggleFavorite('Classic Sandal')">❤️ Favorite</button>
-</button> 
+
+</div>
+
+  <div class="product for women">
+
+  <img src="images/sandal8.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
+  </div>
+
+</div>
+  <div class="product for women">
+
+  <img src="images/sandal9.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
+  </div>
+
+</div>
+
+  <div class="product for women">
+
+  <img src="images/sandal10.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
+  </div>
+
+</div>
+  <div class="product for women">
+
+  <img src="images/sandal11.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
+  </div>
+
+</div>
+  <div class="product for women">
+
+  <img src="images/sandal12.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
+  </div>
+
+</div>
+<div class="product for men">
+
+  <img src="images/sandalM1.jpg">
+
+  <h3>Leather Sandal</h3>
+
+  <p class="sizes">Sizes: 36 - 42</p>
+
+  <p class="price" data-tsh="15000" data-usd="6">
+    15,000 TSh
+  </p>
+
+  <div class="product-buttons">
+
+    <button
+      class="view-btn"
+      onclick="openModal(
+      'Leather Sandal',
+      '15,000 TZS',
+      'images/sandal.jpg',
+      'Leather and comfortable')">
+
+      View Product
+
+    </button>
+
+    <button
+      class="fav-btn"
+      onclick="toggleFavorite('Leather Sandal')">
+
+      ❤️
+
+    </button>
+
+  </div>
+
 </div>
 </div>
+<section id="about" style="padding:50px; text-align:center;">
+
+  <h2>About Us</h2>
+
+  <p>
+    Mariam Sandals Store is a local brand in Tanzania that focuses on
+    affordable, stylish, and comfortable footwear.
+  </p>
+
+  <p>
+    We design sandals for everyday use, combining fashion and durability.
+  </p>
+
+</section>
+
+<section id="contact" style="padding:50px; text-align:center; background:#f3f4f6;">
+
+  <h2>Contact Us</h2>
+
+  <p>📞 WhatsApp: +255 624060759</p>
+  <p>📍 Location: Tanzania</p>
+  <p>📧 Email: mariamsandals@gmail.com</p>
+
+  <button onclick="window.open('https://wa.me/255624060759')">
+    Chat on WhatsApp
+  </button>
+
+</section>
 
 
 <!-- CHAT -->
@@ -216,6 +637,10 @@
   </div>
 
 </div>
+
+<footer>
+  <p>© 2026 Mariam Sandals Store. All rights reserved.</p>
+</footer>
 
 <script src="script.js"></script>
 </body>
