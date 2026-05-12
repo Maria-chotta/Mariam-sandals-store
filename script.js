@@ -222,6 +222,27 @@ function filterProducts(category) {
 
   });
 }
+function buyOnWhatsApp() {
+
+  let productName =
+    document.getElementById("modalName").innerText;
+
+  let productPrice =
+    document.getElementById("modalPrice").innerText;
+
+  let message =
+`Hello, I want to order:
+
+Product: ${productName}
+Price: ${productPrice}`;
+
+  let phoneNumber = "2557XXXXXXXX";
+
+  let whatsappURL =
+    `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  window.open(whatsappURL, "_blank");
+}
 
 function getBotReply(message) { message = message.toLowerCase(); 
 if (message.includes("price")) { return "Prices are 15,000 TSh (~$6) 😊"; } 
