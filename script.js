@@ -244,6 +244,7 @@ Price: ${productPrice}`;
   window.open(whatsappURL, "_blank");
 }
 
+
 function getBotReply(message) { message = message.toLowerCase(); 
 if (message.includes("price")) { return "Prices are 15,000 TSh (~$6) 😊"; } 
 else if (message.includes("hello")) { return "Hi 👋 Welcome to Mariam Sandal Store!"; } 
