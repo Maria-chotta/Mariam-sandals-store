@@ -31,11 +31,23 @@
     
     <h3>⭐ Reviews</h3>
 
-<div id="reviewsList"></div>
+    <div class="rating-area">
+      <div class="rating-label">Rate this product:</div>
+      <div class="star-rating" id="ratingStars">
+        <span class="star" data-value="1" onclick="updateRatingStars(1)">&#9733;</span>
+        <span class="star" data-value="2" onclick="updateRatingStars(2)">&#9733;</span>
+        <span class="star" data-value="3" onclick="updateRatingStars(3)">&#9733;</span>
+        <span class="star" data-value="4" onclick="updateRatingStars(4)">&#9733;</span>
+        <span class="star" data-value="5" onclick="updateRatingStars(5)">&#9733;</span>
+      </div>
+      <p id="ratingSummary">No ratings yet.</p>
+    </div>
 
-<textarea id="reviewText" placeholder="Write your review..."></textarea>
+    <div id="reviewsList"></div>
 
-<button onclick="addReview()">Submit Review</button>
+    <textarea id="reviewText" placeholder="Write your review..."></textarea>
+
+    <button onclick="addReview()">Submit Review</button>
 
   </div>
 </div>
@@ -1190,14 +1202,17 @@
 
 
 <!-- CHAT -->
-<div class="chat-toggle" onclick="toggleChat()">💬</div>
+<div class="chat-toggle" onclick="toggleChat()">Ask me anything</div>
 
 <div class="chat-container" id="chatBox">
-
+  <div class="chat-header">
+    <div class="chat-title">Ask me anything</div>
+    <div class="chat-subtitle">Professional support in English or Swahili</div>
+  </div>
   <div id="chat"></div>
 
   <div class="input-area">
-    <input type="text" id="userInput">
+    <input type="text" id="userInput" placeholder="Type your question...">
     <button onclick="sendMessage()">Send</button>
   </div>
 
