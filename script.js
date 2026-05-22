@@ -1,77 +1,131 @@
-
-  function toggleMenu() {
-  document.querySelector(".top-bar").classList.toggle("active");
+// ===================== MENU =====================
+function toggleMenu() {
+  document.querySelector(".nav-links").classList.toggle("active");
 }
-  let reviews = {};
+
+// ===================== LOCAL STORAGE INIT =====================
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+// ===================== REVIEWS =====================
+let reviews = {};
 let ratings = {};
 let currentProductName = "";
 let currentRating = 0;
-  
+let selectedProduct = null;
 
-function addReview() {
-  let text = document.getElementById("reviewText").value.trim();
-
-  if (text === "" && currentRating === 0) return;
-
-  if (text !== "") {
-    if (!reviews[currentProductName]) {
-      reviews[currentProductName] = [];
-    }
-    reviews[currentProductName].push(text);
-  }
-
-  if (currentRating > 0) {
-    if (!ratings[currentProductName]) {
-      ratings[currentProductName] = [];
-    }
-    ratings[currentProductName].push(currentRating);
-  }
-
-  document.getElementById("reviewText").value = "";
-  currentRating = 0;
-  updateRatingStars(0);
-  displayReviews();
-  updateRatingSummary(currentProductName);
+// ===================== CART =====================
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-function updateRatingStars(value) {
-  currentRating = value;
-  let stars = document.querySelectorAll("#ratingStars .star");
-  stars.forEach(star => {
-    let starValue = Number(star.dataset.value);
-    star.classList.toggle("selected", starValue <= value);
+function addToCart(name, price) {
+  cart.push({ name, price });
+  saveCart();
+  updateCart();
+
+  showToast("🛒 Added to cart successfully!");
+}
+
+function addToCartFromModal() {
+  if (!selectedProduct) return;
+
+  cart.push(selectedProduct);
+  saveCart();
+  updateCart();
+
+  document.getElementById("cartCount").innerText = cart.length;
+
+  showToast("🛒 Added to cart successfully!");
+
+  closeModal();
+}
+
+function updateCart() {
+  saveCart();
+
+  let list = document.getElementById("cartItems");
+  let total = 0;
+
+  list.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    total += Number(item.price);
+
+    list.innerHTML += `
+      <div>
+        ${item.name} - ${item.price} TSh
+        <button onclick="removeItem(${i})">❌</button>
+      </div>
+    `;
   });
+
+  document.getElementById("total").innerText = total;
+  document.getElementById("cartCount").innerText = cart.length;
 }
 
-function updateRatingSummary(productName) {
-  let summary = document.getElementById("ratingSummary");
-  let productRatings = ratings[productName] || [];
-
-  if (productRatings.length === 0) {
-    summary.innerText = "No ratings yet. Be the first to rate this product.";
-    return;
-  }
-
-  let average = productRatings.reduce((sum, rate) => sum + rate, 0) / productRatings.length;
-  summary.innerText = `Rating: ${average.toFixed(1)} / 5 (${productRatings.length} review${productRatings.length === 1 ? '' : 's'})`;
+function removeItem(i) {
+  cart.splice(i, 1);
+  updateCart();
 }
 
-function displayReviews() {
-  let box = document.getElementById("reviewsList");
-  box.innerHTML = "";
+// ===================== CART TOGGLE =====================
+function toggleCart() {
+  let box = document.getElementById("cartBox");
+  box.style.display = box.style.display === "block" ? "none" : "block";
+}
 
-  if (reviews[currentProductName]?.length) {
-    reviews[currentProductName].forEach(r => {
-      box.innerHTML += "<p>💬 " + r + "</p>";
-    });
+// ===================== CHECKOUT =====================
+function checkout() {
+  let phone = "255624060759";
+  let msg = "Order:\n";
+
+  cart.forEach(i => {
+    msg += `${i.name} - ${i.price} TSh\n`;
+  });
+
+  let url = "https://api.whatsapp.com/send?phone=" + phone +
+    "&text=" + encodeURIComponent(msg);
+
+  window.location.href = url;
+}
+
+// ===================== FAVORITES =====================
+function toggleFavorite(name) {
+  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+  if (favorites.includes(name)) {
+    favorites = favorites.filter(p => p !== name);
   } else {
-    box.innerHTML = "<p class='no-reviews'>No reviews yet. Share your feedback above.</p>";
+    favorites.push(name);
+  }
+
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+
+  alert("❤️ Favorites updated");
+}
+
+// ===================== DARK MODE =====================
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
+
+// ===================== CURRENCY =====================
+let currency = "TSh";
+
+function toggleCurrency() {
+  let prices = document.querySelectorAll(".price");
+
+  if (currency === "TSh") {
+    currency = "USD";
+    prices.forEach(p => p.innerHTML = "$" + p.dataset.usd);
+  } else {
+    currency = "TSh";
+    prices.forEach(p => p.innerHTML = p.dataset.tsh + " TSh");
   }
 }
 
-
-  let selectedProduct = null;
-
+// ===================== PRODUCT MODAL =====================
 function openModal(name, price, img, desc) {
   selectedProduct = { name, price };
   currentProductName = name;
@@ -93,101 +147,72 @@ function closeModal() {
   document.getElementById("productModal").style.display = "none";
 }
 
-function addToCartFromModal() {
-  cart.push(selectedProduct);
-  document.getElementById("cartCount").innerText = cart.length;
-  closeModal();
-}
+// ===================== REVIEWS =====================
+function addReview() {
+  let text = document.getElementById("reviewText").value.trim();
 
-// CART SYSTEM
-function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
-}
-let cart = [];
+  if (text === "" && currentRating === 0) return;
 
-
-function addToCart(name, price) {
-  cart.push({name, price});
-  updateCart();
-}
-
-function updateCart() {
-  let list = document.getElementById("cartItems");
-  let total = 0;
-
-  list.innerHTML = "";
-
-  cart.forEach((item, i) => {
-    total += item.price;
-    list.innerHTML += `
-      <div>
-        ${item.name} - ${item.price} TSh
-        <button onclick="removeItem(${i})">❌</button>
-      </div>
-    `;
-  });
-
-  document.getElementById("total").innerText = total;
-  document.getElementById("cartCount").innerText = cart.length;
-}
-
-function removeItem(i) {
-  cart.splice(i,1);
-  updateCart();
-}
-
-function toggleCart() {
-  let box = document.getElementById("cartBox");
-  box.style.display = box.style.display === "block" ? "none" : "block";
-}
-
-function checkout() {
-  let phone = "255624060759";
-  let msg = "Order:\n";
-
-  cart.forEach(i => {
-    msg += i.name + " - " + i.price + " TSh\n";
-  });
-
-  let url = "https://api.whatsapp.com/send?phone="+phone+"&text="+encodeURIComponent(msg);
-  window.location.href = url;
-}
-
-let favorites = [];
-
-function toggleFavorite(name) {
-  if (favorites.includes(name)) {
-    favorites = favorites.filter(p => p !== name);
-  } else {
-    favorites.push(name);
+  if (text !== "") {
+    if (!reviews[currentProductName]) reviews[currentProductName] = [];
+    reviews[currentProductName].push(text);
   }
 
-  localStorage.setItem("favorites", JSON.stringify(favorites));
+  if (currentRating > 0) {
+    if (!ratings[currentProductName]) ratings[currentProductName] = [];
+    ratings[currentProductName].push(currentRating);
+  }
 
-  alert("❤️ Favorites updated");
+  document.getElementById("reviewText").value = "";
+  currentRating = 0;
+
+  updateRatingStars(0);
+  displayReviews();
+  updateRatingSummary(currentProductName);
 }
 
+function updateRatingStars(value) {
+  currentRating = value;
 
+  document.querySelectorAll("#ratingStars .star").forEach(star => {
+    let starValue = Number(star.dataset.value);
+    star.classList.toggle("selected", starValue <= value);
+  });
+}
 
-// CURRENCY
-let currency = "TSh";
+function updateRatingSummary(productName) {
+  let summary = document.getElementById("ratingSummary");
+  let productRatings = ratings[productName] || [];
 
-function toggleCurrency() {
-  let prices = document.querySelectorAll(".price");
+  if (productRatings.length === 0) {
+    summary.innerText = "No ratings yet. Be the first to rate this product.";
+    return;
+  }
 
-  if(currency === "TSh") {
-    currency = "USD";
-    prices.forEach(p => p.innerHTML = "$" + p.dataset.usd);
+  let average = productRatings.reduce((a, b) => a + b, 0) / productRatings.length;
+
+  summary.innerText =
+    `Rating: ${average.toFixed(1)} / 5 (${productRatings.length} review${productRatings.length === 1 ? '' : 's'})`;
+}
+
+function displayReviews() {
+  let box = document.getElementById("reviewsList");
+  box.innerHTML = "";
+
+  if (reviews[currentProductName]?.length) {
+    reviews[currentProductName].forEach(r => {
+      box.innerHTML += `<p>💬 ${r}</p>`;
+    });
   } else {
-    currency = "TSh";
-    prices.forEach(p => p.innerHTML = p.dataset.tsh + " TSh");
+    box.innerHTML = `<p class="no-reviews">No reviews yet. Share your feedback above.</p>`;
   }
 }
 
-// CHAT
+// ===================== CHAT =====================
 function toggleChat() {
   let c = document.getElementById("chatBox");
   let chat = document.getElementById("chat");
+
   let isOpen = c.classList.contains("open");
 
   if (isOpen) {
@@ -196,9 +221,8 @@ function toggleChat() {
     c.classList.add("open");
 
     if (!chat.dataset.started) {
-      chat.innerHTML += "<div class='bot'>Hello! Welcome to Mariam Sandal Store. How may I assist you today?</div>";
+      chat.innerHTML += "<div class='bot'>Hello! Welcome to Mariam Sandal Store.</div>";
       chat.dataset.started = "true";
-      chat.scrollTop = chat.scrollHeight;
     }
   }
 }
@@ -209,142 +233,171 @@ function sendMessage() {
 
   if (!input) return;
 
-  chat.innerHTML += "<div class='user'>" + input + "</div>";
-
-  let reply = getBotReply(input);
-  chat.innerHTML += "<div class='bot'>" + reply + "</div>";
+  chat.innerHTML += `<div class='user'>${input}</div>`;
+  chat.innerHTML += `<div class='bot'>${getBotReply(input)}</div>`;
 
   document.getElementById("userInput").value = "";
   chat.scrollTop = chat.scrollHeight;
 }
 
+// ===================== SEARCH =====================
 function searchProducts() {
-
   let input = document.getElementById("searchInput").value.toLowerCase();
 
-  let products = document.querySelectorAll(".product");
+  document.querySelectorAll(".product").forEach(product => {
+    product.style.display =
+      product.innerText.toLowerCase().includes(input) ? "block" : "none";
+  });
+}
 
-  products.forEach(product => {
-
-    let text = product.innerText.toLowerCase();
-
-    if(text.includes(input)) {
+// ===================== FILTER =====================
+function filterProducts(category) {
+  document.querySelectorAll(".product").forEach(product => {
+    if (category === "all" || product.classList.contains(category)) {
       product.style.display = "block";
     } else {
       product.style.display = "none";
     }
-
-  });
-
-}
-function filterProducts(category) {
-  let products = document.querySelectorAll(".product");
-
-  products.forEach(p => {
-    if (category === "all") {
-      p.style.display = "block";
-    } else if (p.classList.contains(category)) {
-      p.style.display = "block";
-    } else {
-      p.style.display = "none";
-    }
   });
 }
+
+// ===================== WHATSAPP BUY =====================
 function buyOnWhatsApp() {
   let name = document.getElementById("modalName").innerText;
   let price = document.getElementById("modalPrice").innerText;
 
-  let msg = `Hello, I want to order:\n${name}\nPrice: ${price}`;
+  let message = `Hello, I want to order:\nProduct: ${name}\nPrice: ${price}`;
 
-  let url = "https://wa.me/255624060759?text=" + encodeURIComponent(msg);
+  let phone = "255624060759";
 
-  window.open(url, "_blank");
-}
-function filterProducts(category) {
-  let products = document.querySelectorAll(".product");
+  let web =
+    `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
 
-  products.forEach(product => {
+  let app =
+    `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
 
-    if (category === "all") {
-      product.style.display = "block";
-    }
+  // try app first
+  window.location.href = app;
 
-    else if (product.classList.contains(category)) {
-      product.style.display = "block";
-    }
-
-    else {
-      product.style.display = "none";
-    }
-
-  });
-}
-function buyOnWhatsApp() {
-
-  let productName =
-    document.getElementById("modalName").innerText;
-
-  let productPrice =
-    document.getElementById("modalPrice").innerText;
-
-  let message =
-`Hello, I want to order:
-
-Product: ${productName}
-Price: ${productPrice}`;
-
-  let phoneNumber = "2557XXXXXXXX";
-
-  let whatsappURL =
-    `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-
-  window.open(whatsappURL, "_blank");
+  // fallback after 1 second
+  setTimeout(() => {
+    window.location.href = web;
+  }, 1000);
 }
 
+function showToast(message) {
+  let toast = document.getElementById("toast");
 
+  toast.innerText = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2000);
+}
+
+// ===================== BOT =====================
 function getBotReply(message) {
   message = message.toLowerCase().trim();
 
-  let isSwahili = /\b(salamu|habari|bei|gharama|kiasi|ukubwa|siti|kutoa|agiza|ujumbe|wasap|shukrani|asante|asanteni|usafi|ufuata)\b/.test(message);
+  const isSwahili = /\b(salamu|habari|bei|gharama|kiasi|ukubwa|agiza|wasap|shukrani|asante)\b/.test(message);
 
+  // =====================
+  // SMART CONTEXT DETECTION
+  // =====================
+
+  const intent = {
+    price: /(price|cost|how much|bei|gharama)/.test(message),
+    greeting: /(hello|hi|hey|habari|hujambo|mambo)/.test(message),
+    size: /(size|fit|ukubwa)/.test(message),
+    order: /(buy|order|purchase|nunua|agiza)/.test(message),
+    shipping: /(shipping|delivery|ship|usafiri|uwasilishaji)/.test(message),
+    whatsapp: /(whatsapp|contact|support|wasap)/.test(message),
+    thanks: /(thank|thanks|asante|shukrani)/.test(message),
+    help: /(help|what can you do|unaweza|msaada)/.test(message)
+  };
+
+  // =====================
+  // SWAHILI MODE (NATURAL)
+  // =====================
   if (isSwahili) {
-    if (message.includes("bei") || message.includes("gharama") || message.includes("kiasi")) {
-      return "Bei za viatu ni 15,000 TSh (takriban $6 USD). Tafadhali nijulishe ikiwa ungependa ushauri wa mtindo.";
-    } else if (message.includes("salamu") || message.includes("habari") || message.includes("hujambo") || message.includes("mambo")) {
-      return "Habari! Karibu kwenye Duka la Mariam Sandal. Naweza kukusaidia vipi leo?";
-    } else if (message.includes("ukubwa") || message.includes("size") || message.includes("fit")) {
-      return "Tunauza saizi 36 hadi 42. Ikiwa ungependa ushauri wa ukubwa, niko tayari kusaidia.";
-    } else if (message.includes("nunua") || message.includes("agiza") || message.includes("kununua") || message.includes("buy")) {
-      return "Unaweza kuagiza kupitia WhatsApp au kwa kubonyeza kitufe cha kununua. Ninaweza pia kukusaidia kuandaa maelezo ya agizo.";
-    } else if (message.includes("usafirishaji") || message.includes("uwasilishaji") || message.includes("delivery") || message.includes("ship")) {
-      return "Usafirishaji unaratibiwa baada ya uthibitisho wa WhatsApp. Tafadhali tuma eneo lako na muda unaopendelea kwa haraka zaidi.";
-    } else if (message.includes("whatsapp") || message.includes("wasap") || message.includes("mawasiliano") || message.includes("support")) {
-      return "Unaweza kutuwasiliana kupitia WhatsApp kwa +255 624060759. Niko hapa kujibu maswali yako.";
-    } else if (message.includes("asante") || message.includes("shukrani")) {
-      return "Karibu sana. Tafadhali niambie ikiwa kuna kitu kingine ninachoweza kukusaidia nacho.";
-    } else {
-      return "Niko hapa kusaidia kwa maelezo ya bidhaa, ukubwa, bei, na maagizo. Tafadhali uliza swali lako au fafanua jinsi ninavyoweza kukusaidia.";
+    if (intent.greeting) {
+      return "👋 Habari! Karibu kwenye Mariam Sandal Store. Naweza kukusaidia kuchagua viatu, bei au oda yako?";
     }
+
+    if (intent.price) {
+      return "💰 Bei zetu ni TSh 15,000 kwa kila sandal (takriban $6 USD). Ungependa nikusaidie kuchagua style?";
+    }
+
+    if (intent.size) {
+      return "📏 Tunauza size 36 hadi 42. Niambie mguu wako au style unayotaka nikusaidie kuchagua sahihi.";
+    }
+
+    if (intent.order) {
+      return "🛒 Unaweza kuagiza moja kwa moja kupitia WhatsApp. Nikitaka, naweza kukuandalia oda yako hapa.";
+    }
+
+    if (intent.shipping) {
+      return "🚚 Usafirishaji unafanyika baada ya uthibitisho wa oda kupitia WhatsApp. Tunakuhakikishia delivery salama.";
+    }
+
+    if (intent.thanks) {
+      return "😊 Karibu sana! Niko hapa kukusaidia wakati wowote.";
+    }
+
+    return "🤖 Niko hapa kukusaidia kuhusu bei, size, oda na delivery. Niulize chochote kuhusu bidhaa zetu.";
   }
 
-  if (message.includes("price") || message.includes("cost") || message.includes("how much")) {
-    return "Our sandals are priced at 15,000 TSh (approximately $6 USD). Please let me know if you need help choosing a style.";
-  } else if (message.includes("hello") || message.includes("hi") || message.includes("good morning") || message.includes("good afternoon") || message.includes("good evening")) {
-    return "Hello! Welcome to Mariam Sandal Store. How may I assist you with your order today?";
-  } else if (message.includes("size") || message.includes("fit") || message.includes("available")) {
-    return "We offer sizes from 36 to 42. If you would like recommendations for fit, I am happy to assist.";
-  } else if (message.includes("buy") || message.includes("order") || message.includes("purchase")) {
-    return "You can place your order through WhatsApp or by using the Buy button. I can also help you prepare the order details.";
-  } else if (message.includes("shipping") || message.includes("delivery") || message.includes("ship")) {
-    return "Delivery is arranged after WhatsApp confirmation. Please share your location and preferred delivery time for the fastest response.";
-  } else if (message.includes("whatsapp") || message.includes("contact") || message.includes("support")) {
-    return "You may reach us on WhatsApp at +255 624060759. I am here to answer your questions.";
-  } else if (message.includes("thank") || message.includes("thanks")) {
-    return "You’re welcome. Please let me know if there is anything else I can assist you with.";
-  } else {
-    return "I am here to assist with product details, sizing, pricing, and orders. Please ask your question or specify how I can help.";
+  // =====================
+  // ENGLISH MODE (SMART AI STYLE)
+  // =====================
+
+  if (intent.greeting) {
+    return "👋 Hello! Welcome to Mariam Sandal Store. I can help you find products, check prices, or place an order.";
   }
+
+  if (intent.price) {
+    return "💰 Our sandals cost 15,000 TSh (~$6 USD). Would you like recommendations based on style or size?";
+  }
+
+  if (intent.size) {
+    return "📏 We offer sizes 36–42. If you tell me your preference, I can recommend the best fit for you.";
+  }
+
+  if (intent.order) {
+    return "🛒 You can place an order directly via WhatsApp. I can also prepare your order details for you instantly.";
+  }
+
+  if (intent.shipping) {
+    return "🚚 Delivery is arranged after WhatsApp confirmation. We ensure fast and safe delivery.";
+  }
+
+  if (intent.whatsapp) {
+    return "📱 You can contact us via WhatsApp at +255 624060759 for fast support.";
+  }
+
+  if (intent.help) {
+    return "🤖 I can help you with: product info, pricing, sizes, orders, and delivery. What would you like to know?";
+  }
+
+  if (intent.thanks) {
+    return "😊 You're welcome! Let me know if you need anything else.";
+  }
+
+  // =====================
+  // SMART FALLBACK (IMPORTANT)
+  // =====================
+  return `
+🤖 I'm not fully sure, but I can help you with:
+
+• Product prices 💰  
+• Shoe sizes 📏  
+• Orders 🛒  
+• Delivery 🚚  
+
+Try asking something like:
+"How much are sandals?"
+or
+"What sizes do you have?"
+  `;
 }
-
-
-
