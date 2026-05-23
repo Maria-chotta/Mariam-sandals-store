@@ -31,6 +31,16 @@ body {
   
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  animation:fadePage 0.5s ease;
+}
+
+@keyframes fadePage{
+  from{
+    opacity:0;
+  }
+  to{
+    opacity:1;
+  }
 }
 
 html {
@@ -123,6 +133,9 @@ header p {
 .nav-links a:hover{
   color: var(--primary);
 }
+.nav-links a.active{
+  color:#22c55e;
+}
 
 /* =======================
    TOP BAR
@@ -214,12 +227,13 @@ header p {
   transform: translateY(-8px);
 }
 
-.product img {
-  width: 100%;
-  height: 260px;
-  object-fit: cover;
-  border-radius: 15px;
+.product img{
+  width:100%;
+  height:300px;
+  object-fit:cover;
+  border-radius:20px 20px 0 0;
 }
+
 .product h3 {
   margin: 10px 0 5px;
 }
@@ -272,6 +286,10 @@ header p {
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(0,0,0,0.12);
 }
+.product:hover{
+  transform:translateY(-8px);
+  box-shadow:0 15px 30px rgba(34,197,94,0.15);
+}
 
 
 /* =======================
@@ -288,6 +306,12 @@ header p {
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
   padding: 10px;
   display: none;
+}
+.empty-cart{
+  text-align:center;
+  color:#6b7280;
+  padding:20px;
+  font-size:15px;
 }
 
 /* =======================
@@ -317,8 +341,8 @@ header p {
 
 .chat-container {
   position: fixed;
-  bottom: 100px;
-  right: 20px;
+  top: 50%;
+  left: 50%;
   width: 340px;
   background: var(--white);
   border-radius: 24px;
@@ -327,14 +351,14 @@ header p {
   flex-direction: column;
   border: 1px solid var(--border);
   opacity: 0;
-  transform: translateY(10px);
+  transform: translate(-50%, -40%);
   transition: opacity 0.28s ease, transform 0.28s ease;
 }
 
 .chat-container.open {
   display: flex;
   opacity: 1;
-  transform: translateY(0);
+  transform: translate(-50%, -50%);
 }
 
 .chat-header {
@@ -588,6 +612,7 @@ textarea {
 .nav-links {
   display: flex;
   gap: 20px;
+  transition:0.3s ease;
 }
 
 .nav-links a {
@@ -706,12 +731,16 @@ html {
 .hero-content {
   max-width: 700px;
   padding: 20px;
+  backdrop-filter: blur(4px);
+  border-radius: 15px;
 }
 
 .hero h1 {
   font-size: 4rem;
   margin-bottom: 20px;
+  line-height:1.1;
 }
+
 
 .hero p {
   font-size: 18px;
@@ -1061,4 +1090,50 @@ html {
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(-10px);
+}
+
+#topBtn{
+  position:fixed;
+  bottom:90px;
+  right:20px;
+  background:#22c55e;
+  color:white;
+  border:none;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  font-size:22px;
+  cursor:pointer;
+  display:none;
+  z-index:1000;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+#topBtn:hover{
+  background:#16a34a;
+}
+.quantity-box{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:15px;
+  margin:15px 0;
+}
+
+.quantity-box button{
+  width:40px;
+  height:40px;
+  border:none;
+  border-radius:10px;
+  background:#22c55e;
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.quantity-box span{
+  font-size:20px;
+  font-weight:bold;
+  min-width:30px;
+  text-align:center;
 }

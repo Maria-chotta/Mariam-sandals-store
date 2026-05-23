@@ -34,11 +34,18 @@
     
     <span class="close" onclick="closeModal()">&times;</span>
 
-    <img id="modalImg" src="" alt="Product" />
+    <img id="modalImg" src="" alt="Product" />total += Number(item.price);
 
     <h2 id="modalName"></h2>
 
     <p id="modalPrice"></p>
+    <div class="quantity-box">
+  <button onclick="changeQty(-1)">-</button>
+
+  <span id="quantity">1</span>
+
+  <button onclick="changeQty(1)">+</button>
+</div>
 
     <p id="modalDesc"></p>
 
@@ -1380,6 +1387,7 @@
     <p>© 2026 Mariam Sandal Store. All Rights Reserved.</p>
   </div>
 </footer>
+<button id="topBtn">↑</button>
 
 <script src="script.js"></script>
 <div id="toast" class="toast"></div>

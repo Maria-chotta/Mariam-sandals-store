@@ -15,6 +15,7 @@ let currentRating = 0;
 let selectedProduct = null;
 
 // ===================== CART =====================
+let quantity = 1;
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
@@ -30,7 +31,11 @@ function addToCart(name, price) {
 function addToCartFromModal() {
   if (!selectedProduct) return;
 
-  cart.push(selectedProduct);
+  cart.push({
+  name: selectedProduct.name,
+  price: selectedProduct.price,
+  quantity: quantity
+});
   saveCart();
   updateCart();
 
@@ -49,12 +54,26 @@ function updateCart() {
 
   list.innerHTML = "";
 
+  // ADD THIS HERE
+  if(cart.length === 0){
+    list.innerHTML = `
+      <p class="empty-cart">
+        🛒 Your cart is empty
+      </p>
+    `;
+
+    document.getElementById("total").innerText = 0;
+    document.getElementById("cartCount").innerText = 0;
+
+    return;
+  }
+
   cart.forEach((item, i) => {
-    total += Number(item.price);
+    total += Number(item.price) * item.quantity;
 
     list.innerHTML += `
       <div>
-        ${item.name} - ${item.price} TSh
+        ${item.name} × ${item.quantity} - ${item.price * item.quantity} TSh
         <button onclick="removeItem(${i})">❌</button>
       </div>
     `;
@@ -68,6 +87,8 @@ function removeItem(i) {
   cart.splice(i, 1);
   updateCart();
 }
+
+
 
 // ===================== CART TOGGLE =====================
 function toggleCart() {
@@ -125,6 +146,16 @@ function toggleCurrency() {
   }
 }
 
+function changeQty(value){
+
+  quantity += value;
+
+  if(quantity < 1){
+    quantity = 1;
+  }
+
+  document.getElementById("quantity").innerText = quantity;
+}
 // ===================== PRODUCT MODAL =====================
 function openModal(name, price, img, desc) {
   selectedProduct = { name, price };
@@ -139,6 +170,9 @@ function openModal(name, price, img, desc) {
   updateRatingStars(0);
   updateRatingSummary(name);
   displayReviews();
+
+  quantity = 1;
+document.getElementById("quantity").innerText = quantity;
 
   document.getElementById("productModal").style.display = "block";
 }
@@ -295,6 +329,26 @@ function showToast(message) {
     toast.classList.remove("show");
   }, 2000);
 }
+
+
+let topBtn = document.getElementById("topBtn");
+
+window.onscroll = function () {
+
+  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+    topBtn.style.display = "block";
+  } else {
+    topBtn.style.display = "none";
+  }
+
+};
+
+topBtn.onclick = function () {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+};
 
 // ===================== BOT =====================
 function getBotReply(message) {
