@@ -21,7 +21,7 @@ function saveCart() {
 }
 
 function addToCart(name, price) {
-  cart.push({ name, price });
+  cart.push({ name, price, quantity: 1 });
   saveCart();
   updateCart();
 
@@ -54,8 +54,7 @@ function updateCart() {
 
   list.innerHTML = "";
 
-  // ADD THIS HERE
-  if(cart.length === 0){
+  if (cart.length === 0) {
     list.innerHTML = `
       <p class="empty-cart">
         🛒 Your cart is empty
@@ -69,11 +68,13 @@ function updateCart() {
   }
 
   cart.forEach((item, i) => {
-    total += Number(item.price) * item.quantity;
+    const quantity = Number(item.quantity) || 1;
+    const itemTotal = Number(item.price) * quantity;
+    total += itemTotal;
 
     list.innerHTML += `
       <div>
-        ${item.name} × ${item.quantity} - ${item.price * item.quantity} TSh
+        ${item.name} × ${quantity} - ${itemTotal} TSh
         <button onclick="removeItem(${i})">❌</button>
       </div>
     `;
@@ -102,7 +103,9 @@ function checkout() {
   let msg = "Order:\n";
 
   cart.forEach(i => {
-    msg += `${i.name} - ${i.price} TSh\n`;
+    const quantity = Number(i.quantity) || 1;
+    const itemTotal = Number(i.price) * quantity;
+    msg += `${i.name} × ${quantity} - ${itemTotal} TSh\n`;
   });
 
   let url = "https://api.whatsapp.com/send?phone=" + phone +
@@ -158,7 +161,8 @@ function changeQty(value){
 }
 // ===================== PRODUCT MODAL =====================
 function openModal(name, price, img, desc) {
-  selectedProduct = { name, price };
+  const numericPrice = Number(price.toString().replace(/[^0-9.-]/g, "")) || 0;
+  selectedProduct = { name, price: numericPrice, priceText: price };
   currentProductName = name;
   currentRating = 0;
 
@@ -455,3 +459,53 @@ or
 "What sizes do you have?"
   `;
 }
+
+async function loadProducts() {
+  try {
+    const res = await fetch("http://localhost:5000/api/products");
+    const products = await res.json();
+
+    console.log("Loaded products:", products);
+
+    if (!products.length) return;
+
+    const container = document.getElementById("products");
+    container.innerHTML = "";
+
+    products.forEach((product) => {
+      let imageSrc = product.image;
+
+      if (!imageSrc || typeof imageSrc !== "string") {
+        console.warn("Product has invalid image path:", product);
+        imageSrc = "images/sandal.jpg";
+      }
+
+      const productName = JSON.stringify(product.name);
+      const productDesc = JSON.stringify(product.description || "");
+      const categoryClass = product.category ? product.category.toLowerCase() : "";
+      const usdPrice = ((product.price || 0) / 2500).toFixed(2);
+      const sizeText = Array.isArray(product.sizes) ? product.sizes.join(" - ") : "36 - 42";
+
+      container.innerHTML += `
+        <div class="product ${categoryClass}">
+          <img src="${imageSrc}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p class="sizes">Sizes: ${sizeText}</p>
+          <p class="price" data-tsh="${product.price}" data-usd="${usdPrice}">
+            ${product.price.toLocaleString()} TSh
+          </p>
+          <div class="product-buttons">
+            <button class="view-btn" onclick="openModal(${productName}, '${product.price.toLocaleString()} TZS', '${imageSrc}', ${productDesc})">View Product</button>
+            <button class="add-cart-btn" onclick="addToCart(${productName}, ${product.price})">Add to Cart</button>
+            <button class="fav-btn" onclick="toggleFavorite(${productName})">❤️</button>
+          </div>
+        </div>
+      `;
+    });
+  } catch (error) {
+    console.warn("Unable to load products from API; static product listing is preserved.", error);
+  }
+}
+
+// run when page loads
+loadProducts();
