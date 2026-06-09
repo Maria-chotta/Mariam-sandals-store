@@ -69,6 +69,8 @@ http://localhost:5000
 
 - The frontend includes a product loader that fetches from `http://localhost:5000/api/products`.
 - If the backend is unavailable, the current static product listing will remain visible.
+- Orders are saved using the backend at `http://localhost:5000/api/orders`.
+- To view captured orders locally, open `orders.html` while the backend is running.
 - To see website visitors, open the Google Analytics property for ID `G-7TNHTPZ8VY`.
 
 ## Git
