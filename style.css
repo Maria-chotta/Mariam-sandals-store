@@ -1240,7 +1240,7 @@ html {
 }
 
 .whatsapp-float{
-  position: fixed;
+  position: var(--text)fixed;
   bottom: 24px;
   right: 24px;
   width: 62px;
