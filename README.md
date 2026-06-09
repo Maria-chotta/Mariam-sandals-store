@@ -75,7 +75,7 @@ http://localhost:5000
 
 ## Git
 
-Commit your changes with a message like:
+Commit my changes with a message like:
 
 ```bash
 git add .
