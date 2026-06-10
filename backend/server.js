@@ -12,12 +12,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, "../frontend")));
+// Serve static frontend files from the frontend directory
+const frontendPath = path.join(__dirname, "..", "frontend");
+console.log("Serving static files from:", frontendPath);
+app.use(express.static(frontendPath));
 
 // API Routes
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+
+// Fallback: serve index.html for any non-API request (SPA routing)
+app.use((req, res, next) => {
+  if (!req.path.startsWith("/api")) {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  } else {
+    next();
+  }
+});
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
