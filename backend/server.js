@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const cors = require("cors");
@@ -11,12 +12,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, "../frontend")));
+
+// API Routes
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Mariam Sandal Store Backend Running");
+// Serve index.html for all non-API routes (SPA fallback)
+app.get("*", (req, res) => {
+  if (!req.path.startsWith("/api")) {
+    res.sendFile(path.join(__dirname, "../frontend/index.html"));
+  }
 });
 
 // MongoDB connection

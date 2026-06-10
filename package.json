@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "mkdir -p build && cp -R *.html *.css *.js images .nojekyll build/"
+    "build": "mkdir -p build && cp -R *.html *.css *.js images .nojekyll build/",
+    "start": "node backend/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.2"
   }
 }
