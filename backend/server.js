@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static frontend files from the frontend directory
-const frontendPath = path.join(__dirname, "..", "frontend");
+const frontendPath = path.join(process.cwd(), "frontend");
 console.log("Serving static files from:", frontendPath);
 app.use(express.static(frontendPath));
 
