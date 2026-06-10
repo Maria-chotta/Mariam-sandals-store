@@ -19,13 +19,6 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Serve index.html for all non-API routes (SPA fallback)
-app.get("*", (req, res) => {
-  if (!req.path.startsWith("/api")) {
-    res.sendFile(path.join(__dirname, "../frontend/index.html"));
-  }
-});
-
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
