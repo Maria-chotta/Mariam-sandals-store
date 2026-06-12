@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "mkdir -p build && cp -R *.html *.css *.js images .nojekyll build/",
+    "build": "mkdir -p build && cp -R frontend/*.html frontend/*.css frontend/*.js frontend/images .nojekyll build/",
+    "prestart": "npm run build",
+    "postinstall": "npm run build",
     "start": "node backend/server.js"
   },
   "dependencies": {
