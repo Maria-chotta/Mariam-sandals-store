@@ -15,39 +15,34 @@ app.use(express.json());
 // Frontend path
 const frontendPath = path.join(__dirname, "..", "frontend");
 console.log("Serving frontend from:", frontendPath);
+app.use(express.static(frontendPath));
 
 // API Routes
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Serve frontend files and SPA routes
-app.get("*", (req, res, next) => {
-  // Skip API routes
+// SPA fallback: serve index.html for any non-API GET route
+app.get('/*', (req, res, next) => {
   if (req.path.startsWith("/api")) {
     return next();
   }
-  
-  // Try to serve the requested file
-  const filePath = path.join(frontendPath, req.path === "/" ? "index.html" : req.path);
-  
-  res.sendFile(filePath, (err) => {
-    // If file not found, serve index.html for SPA routing
+  res.sendFile(path.join(frontendPath, "index.html"), (err) => {
     if (err) {
-      const indexPath = path.join(frontendPath, "index.html");
-      res.sendFile(indexPath, (indexErr) => {
-        if (indexErr) {
-          console.log("Error serving index.html:", indexErr.message);
-          res.status(500).send("Error loading frontend");
-        }
-      });
+      console.log("Error serving index.html:", err.message);
+      res.status(500).send("Error loading frontend");
     }
   });
 });
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err));
+if (process.env.MONGO_URI) {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+} else {
+  console.log("MONGO_URI is not defined. Skipping database connection.");
+}
+
 
 // Server
 const PORT = process.env.PORT || 5000;
