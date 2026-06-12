@@ -13,40 +13,32 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Frontend path: check several common locations and prefer one containing index.html
+// Frontend path: check the most likely locations and pick only one that contains index.html
 const candidates = [
-  path.join(__dirname, "..", "build"),
-  path.join(path.resolve(__dirname, ".."), "build"),
-  path.join(process.cwd(), "build"),
+  path.resolve(__dirname, "..", "build"),
+  path.resolve(__dirname, "..", "frontend"),
   path.resolve(process.cwd(), "build"),
-  path.join(__dirname, "..", "frontend"),
-  path.join(path.resolve(__dirname, ".."), "frontend"),
-  path.join(process.cwd(), "frontend"),
   path.resolve(process.cwd(), "frontend"),
-  path.join("/app", "build"),
-  path.join("/app", "frontend"),
-  path.join("/", "build"),
-  path.join("/", "frontend"),
 ];
 
 function findFrontendPath() {
+  const checks = [];
+
   for (const p of candidates) {
+    const indexPath = path.join(p, "index.html");
     try {
-      if (fs.existsSync(path.join(p, "index.html"))) return p;
+      const exists = fs.existsSync(indexPath);
+      checks.push(`${p} -> ${exists ? "found" : "missing"}`);
+      if (exists) return p;
     } catch (err) {
-      // ignore
+      checks.push(`${p} -> error: ${err.message}`);
     }
   }
-  // If no index.html found, pick the first existing candidate directory
-  for (const p of candidates) {
-    try {
-      if (fs.existsSync(p)) return p;
-    } catch (err) {
-      // ignore
-    }
-  }
-  // fallback to the original relative frontend
-  return path.join(__dirname, "..", "frontend");
+
+  console.log("Frontend path candidates checked:", checks);
+  throw new Error(
+    "No valid frontend path found. Expected build/index.html or frontend/index.html in one of the candidate directories."
+  );
 }
 
 const frontendPath = findFrontendPath();
