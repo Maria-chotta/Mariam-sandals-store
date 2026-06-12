@@ -22,7 +22,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 
 // SPA fallback: serve index.html for any non-API GET route
-app.get("/*", (req, res) => {
+app.get(/^\/.*$/, (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"), (err) => {
     if (err) {
       console.log("Error serving index.html:", err.message);
