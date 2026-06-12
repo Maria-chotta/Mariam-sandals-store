@@ -13,11 +13,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Frontend path: prefer production `build` if present, otherwise fallback to `frontend`
-const buildPath = path.join(__dirname, "..", "build");
-const frontendPath = fs.existsSync(buildPath)
-  ? buildPath
-  : path.join(__dirname, "..", "frontend");
+// Frontend path: check several common locations and prefer one containing index.html
+const candidates = [
+  path.join(__dirname, "..", "build"),
+  path.join(process.cwd(), "build"),
+  path.join(__dirname, "..", "frontend"),
+  path.join(process.cwd(), "frontend"),
+];
+
+function findFrontendPath() {
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(path.join(p, "index.html"))) return p;
+    } catch (err) {
+      // ignore
+    }
+  }
+  // If no index.html found, pick the first existing candidate directory
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) return p;
+    } catch (err) {
+      // ignore
+    }
+  }
+  // fallback to the original relative frontend
+  return path.join(__dirname, "..", "frontend");
+}
+
+const frontendPath = findFrontendPath();
 console.log("Serving frontend from:", frontendPath);
 app.use(express.static(frontendPath));
 
