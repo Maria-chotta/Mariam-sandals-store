@@ -22,10 +22,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 
 // SPA fallback: serve index.html for any non-API GET route
-app.get('/*', (req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    return next();
-  }
+app.get("/*", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"), (err) => {
     if (err) {
       console.log("Error serving index.html:", err.message);
@@ -33,6 +30,7 @@ app.get('/*', (req, res, next) => {
     }
   });
 });
+
 
 // MongoDB connection
 if (process.env.MONGO_URI) {
@@ -50,3 +48,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });
+
