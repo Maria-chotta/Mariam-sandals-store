@@ -16,9 +16,17 @@ app.use(express.json());
 // Frontend path: check several common locations and prefer one containing index.html
 const candidates = [
   path.join(__dirname, "..", "build"),
+  path.join(path.resolve(__dirname, ".."), "build"),
   path.join(process.cwd(), "build"),
+  path.resolve(process.cwd(), "build"),
   path.join(__dirname, "..", "frontend"),
+  path.join(path.resolve(__dirname, ".."), "frontend"),
   path.join(process.cwd(), "frontend"),
+  path.resolve(process.cwd(), "frontend"),
+  path.join("/app", "build"),
+  path.join("/app", "frontend"),
+  path.join("/", "build"),
+  path.join("/", "frontend"),
 ];
 
 function findFrontendPath() {
