@@ -1,3 +1,6 @@
+// ===================== API CONFIG =====================
+const API_BASE_URL = "https://mariam-sandals-store-production.up.railway.app";
+
 // ===================== MENU =====================
 function toggleMenu() {
   document.querySelector(".nav-links").classList.toggle("active");
@@ -152,7 +155,7 @@ async function submitOrder() {
   };
 
   try {
-    const response = await fetch("/api/orders", {
+    const response = await fetch(`${API_BASE_URL}/api/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData)
@@ -554,7 +557,7 @@ or
 
 async function loadProducts() {
   try {
-    const res = await fetch("/api/products");
+    const res = await fetch(`${API_BASE_URL}/api/products`);
     const products = await res.json();
 
     console.log("Loaded products:", products);

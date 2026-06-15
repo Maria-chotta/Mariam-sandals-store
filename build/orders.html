@@ -22,7 +22,7 @@
     async function loadOrders() {
       const list = document.getElementById('ordersList');
       try {
-        const response = await fetch('http://localhost:5000/api/orders');
+        const response = await fetch('/api/orders');
         const orders = await response.json();
 
         if (!orders.length) {
@@ -48,7 +48,7 @@
           `;
         }).join('');
       } catch (err) {
-        list.innerHTML = `<p style="color:#ef4444;">Unable to load orders. Make sure the backend is running at <code>http://localhost:5000</code>.</p>`;
+        list.innerHTML = `<p style="color:#ef4444;">Unable to load orders. Make sure the backend is running.</p>`;
         console.error(err);
       }
     }
