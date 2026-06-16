@@ -154,32 +154,38 @@ async function submitOrder() {
     status: "pending"
   };
 
+  const whatsappText = `Hello, I would like to order:\n${items.map(i => `${i.name} × ${i.quantity} - ${i.price} TSh`).join("\n")}\nTotal: ${total} TSh\nName: ${name}\nPhone: ${phone}\nAddress: ${address}\nNote: ${note}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=255624060759&text=${encodeURIComponent(whatsappText)}`;
+
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
     const response = await fetch(`${API_BASE_URL}/api/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData)
+      body: JSON.stringify(orderData),
+      signal: controller.signal
     });
+
+    clearTimeout(timeout);
 
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to save order.");
     }
 
-    showToast("Order saved. Please send it on WhatsApp to confirm.");
-    closeOrderModal();
-    cart = [];
-    saveCart();
-    updateCart();
-
-    const whatsappText = `Hello, I would like to order:\n${items.map(i => `${i.name} × ${i.quantity} - ${i.price} TSh`).join("\n")}\nTotal: ${total} TSh\nName: ${name}\nPhone: ${phone}\nAddress: ${address}\nNote: ${note}`;
-
-    const webUrl = `https://api.whatsapp.com/send?phone=255624060759&text=${encodeURIComponent(whatsappText)}`;
-    window.open(webUrl, "_blank");
+    showToast("Order saved. Opening WhatsApp to confirm.");
   } catch (err) {
     console.error(err);
-    showToast("Could not save order. Check backend and try again.");
+    showToast("Opening WhatsApp to confirm your order.");
   }
+
+  closeOrderModal();
+  cart = [];
+  saveCart();
+  updateCart();
+  window.location.href = whatsappUrl;
 }
 
 function checkout() {
@@ -562,12 +568,22 @@ async function loadProducts() {
 
     console.log("Loaded products:", products);
 
-    if (!products.length) return;
+    if (!Array.isArray(products) || !products.length) return;
+
+    const usableProducts = products.filter(product => {
+      const image = product.image || "";
+      return product.name && Number(product.price) > 0 && image.startsWith("images/");
+    });
+
+    if (!usableProducts.length) {
+      console.warn("API products are missing usable local images; static product listing is preserved.");
+      return;
+    }
 
     const container = document.getElementById("products");
     container.innerHTML = "";
 
-    products.forEach((product) => {
+    usableProducts.forEach((product) => {
       let imageSrc = product.image;
 
       if (!imageSrc || typeof imageSrc !== "string") {
@@ -603,4 +619,8 @@ async function loadProducts() {
 }
 
 // run when page loads
-loadProducts();
+// Static products are already rendered in HTML. API loading is optional and
+// should only be enabled when the live database contains production products.
+if (window.USE_API_PRODUCTS === true) {
+  loadProducts();
+}
