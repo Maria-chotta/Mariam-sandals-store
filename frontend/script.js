@@ -3,7 +3,9 @@ const API_BASE_URL = "https://mariam-sandals-store-production.up.railway.app";
 
 // ===================== MENU =====================
 function toggleMenu() {
-  document.querySelector(".nav-links").classList.toggle("active");
+  document.querySelectorAll(".nav-links").forEach(nav => {
+    nav.classList.toggle("active");
+  });
 }
 
 // ===================== LOCAL STORAGE INIT =====================
@@ -66,6 +68,7 @@ function updateCart() {
 
     document.getElementById("total").innerText = 0;
     document.getElementById("cartCount").innerText = 0;
+    document.getElementById("cartCountNav").innerText = 0;
 
     return;
   }
@@ -85,6 +88,7 @@ function updateCart() {
 
   document.getElementById("total").innerText = total;
   document.getElementById("cartCount").innerText = cart.length;
+  document.getElementById("cartCountNav").innerText = cart.length;
 }
 
 function removeItem(i) {
@@ -373,24 +377,81 @@ function closeChat() {
   chat.innerHTML = "";
 }
 
-// ===================== SEARCH =====================
-function searchProducts() {
-  let input = document.getElementById("searchInput").value.toLowerCase();
+// ===================== SEARCH & FILTER =====================
+let activeCategory = "all";
 
-  document.querySelectorAll(".product").forEach(product => {
-    product.style.display =
-      product.innerText.toLowerCase().includes(input) ? "block" : "none";
-  });
+function getCategoryLabel(category) {
+  const labels = {
+    all: "all sandals",
+    men: "men's sandals",
+    women: "women's sandals"
+  };
+
+  return labels[category] || "sandals";
 }
 
-// ===================== FILTER =====================
-function filterProducts(category) {
+function updateCategoryControls() {
+  document.querySelectorAll(".category-card").forEach(button => {
+    button.classList.toggle("active", button.dataset.category === activeCategory);
+  });
+
+  const title = document.getElementById("collectionTitle");
+  const subtitle = document.getElementById("collectionSubtitle");
+  const status = document.getElementById("categoryStatus");
+
+  if (title) {
+    title.innerText = activeCategory === "all"
+      ? "Featured Collection"
+      : `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} Sandals`;
+  }
+
+  if (subtitle) {
+    subtitle.innerText = activeCategory === "men"
+      ? "Only men's sandals are shown in this group"
+      : activeCategory === "women"
+        ? "Only women's sandals are shown in this group"
+        : "Best selling sandals picked for you";
+  }
+
+  if (status) {
+    status.innerText = `Showing ${getCategoryLabel(activeCategory)}`;
+  }
+}
+
+function applyProductFilters() {
+  const input = document.getElementById("searchInput")?.value.toLowerCase() || "";
+  let visibleCount = 0;
+
   document.querySelectorAll(".product").forEach(product => {
-    if (category === "all" || product.classList.contains(category)) {
-      product.style.display = "block";
-    } else {
-      product.style.display = "none";
-    }
+    const matchesCategory = activeCategory === "all" || product.classList.contains(activeCategory);
+    const matchesSearch = product.innerText.toLowerCase().includes(input);
+    const isVisible = matchesCategory && matchesSearch;
+
+    product.style.display = isVisible ? "block" : "none";
+    if (isVisible) visibleCount += 1;
+  });
+
+  const status = document.getElementById("categoryStatus");
+  if (status) {
+    const searchText = input ? ` matching "${input}"` : "";
+    status.innerText = `${visibleCount} product${visibleCount === 1 ? "" : "s"} in ${getCategoryLabel(activeCategory)}${searchText}`;
+  }
+}
+
+function searchProducts() {
+  applyProductFilters();
+}
+
+function filterProducts(category) {
+  activeCategory = category;
+  updateCategoryControls();
+  applyProductFilters();
+  document.getElementById("products")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function updateProductCardButtons() {
+  document.querySelectorAll(".add-cart-btn").forEach(button => {
+    button.innerText = "Order Now";
   });
 }
 
@@ -607,12 +668,16 @@ async function loadProducts() {
           </p>
           <div class="product-buttons">
             <button class="view-btn" onclick="openModal(${productName}, '${product.price.toLocaleString()} TZS', '${imageSrc}', ${productDesc})">View Product</button>
-            <button class="add-cart-btn" onclick="addToCart(${productName}, ${product.price})">Add to Cart</button>
+            <button class="add-cart-btn" onclick="addToCart(${productName}, ${product.price})">Order Now</button>
             <button class="fav-btn" onclick="toggleFavorite(${productName})">❤️</button>
           </div>
         </div>
       `;
     });
+
+    updateProductCardButtons();
+    updateCategoryControls();
+    applyProductFilters();
   } catch (error) {
     console.warn("Unable to load products from API; static product listing is preserved.", error);
   }
@@ -624,3 +689,8 @@ async function loadProducts() {
 if (window.USE_API_PRODUCTS === true) {
   loadProducts();
 }
+
+updateCart();
+updateProductCardButtons();
+updateCategoryControls();
+applyProductFilters();

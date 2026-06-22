@@ -1,14 +1,35 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
 const Product = require("../models/Product");
+const defaultProducts = require("../data/defaultProducts");
+
+function getUsableCatalogProducts(products) {
+  return products.filter(product => {
+    return product.name &&
+      Number(product.price) > 0 &&
+      typeof product.image === "string" &&
+      product.image.startsWith("images/");
+  });
+}
 
 
 // GET ALL PRODUCTS
 router.get("/", async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.json(defaultProducts);
+    }
+
     const products = await Product.find();
-    res.json(products);
+    const usableProducts = getUsableCatalogProducts(products);
+
+    if (!usableProducts.length) {
+      return res.json(defaultProducts);
+    }
+
+    res.json(usableProducts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
